@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>精品发卡商店</title>
+    <!-- 使用Bootstrap快速美化 -->
+    <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.1.3/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .card {
+            transition: transform 0.3s;
+            margin: 20px;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        .price-tag {
+            font-size: 24px;
+            color: #ff4444;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container my-5">
+        <h1 class="text-center mb-4">🎀 精品发卡商店</h1>
+        
+        <!-- 商品卡片 -->
+        <div class="row">
+            <!-- 商品1 -->
+            <div class="col-md-4">
+                <div class="card">
+                    <img src="https://place-holder.com/300x200" class="card-img-top" alt="水晶发卡">
+                    <div class="card-body">
+                        <h5 class="card-title">水晶蝴蝶发卡 ¥48.00</h5>
+                        <p class="card-text">材质：锆石+925银<br>适合场合：宴会/日常</p>
+                        <p class="price-tag">¥48.00</p>
+                        <button class="btn btn-primary" onclick="showOrderForm('水晶蝴蝶发卡')">立即购买</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 商品2 -->
+            <div class="col-md-4">
+                <!-- 结构同上，此处省略 -->
+            </div>
+        </div>
+    </div>
+
+    <!-- 订单表单弹窗（使用Bootstrap的Modal组件） -->
+    <div class="modal fade" id="orderModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">购买：<span id="productName"></span></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="orderForm">
+                        <div class="mb-3">
+                            <label class="form-label">收货人</label>
+                            <input type="text" class="form-control" required>
+                        </div>
+                        <!-- 模拟微信/支付宝支付选项 -->
+                        <div class="mb-3">
+                            <img src="https://fakeimg.pl/200x80/?text=WeChat Pay" style="width: 200px; cursor: pointer;">
+                            <img src="https://fakeimg.pl/200x80/?text=Alipay" style="width: 200px; cursor: pointer;">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">关闭</button>
+                    <button type="submit" form="orderForm" class="btn btn-primary">提交订单</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 引入Bootstrap JS和依赖 -->
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // 显示订单表单
+        function showOrderForm(productName) {
+            document.getElementById('productName').textContent = productName;
+            new bootstrap.Modal('#orderModal').show();
+        }
+
+        // 表单提交（需替换为真实支付接口）
+        document.getElementById('orderForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('订单提交成功！稍后您会收到支付通知。');
+            bootstrap.Modal.getInstance('#orderModal').hide();
+        });
+    </script>
+</body>
+</html>
