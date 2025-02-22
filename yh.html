@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>烟花特效</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background: #000;
+            cursor: crosshair;
+        }
+        #canvas {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+        .controls {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            color: white;
+            z-index: 100;
+        }
+    </style>
+</head>
+<body>
+    <div class="controls">
+        <button onclick="toggleAutoLaunch()">切换自动发射 {autoLaunch ? 'OFF' : 'ON'}</button>
+    </div>
+    <canvas id="canvas"></canvas>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        let width = canvas.width = window.innerWidth;
+        let height = canvas.height = window.innerHeight;
+        let particles = [];
+        let autoLaunch = false;
+        let hue = 0;
+
+        // 窗口大小调整时重置画布
+        window.addEventListener('resize', () => {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+        });
+
+        // 生成随机粒子颜色
+        function randomColor() {
+            return `hsl(${hue}, 100%, 50%)`;
+        }
+
+        class Particle {
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
+                this.radius = Math.random() * 3 + 1;
+                this.color = randomColor();
+                this.velocity = {
+                    x: (Math.random() - 0.5) * 15,
+                    y: (Math.random() - 0.5) * 15
+                };
+                this.gravity = 0.3;
+                this.alpha = 1;
+            }
+
+            draw() {
+                ctx.save();
+                ctx.globalAlpha = this.alpha;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.fillStyle = this.color;
+                ctx.fill();
+                ctx.restore();
+            }
+
+            update() {
+                this.velocity.y += this.gravity;
+                this.x += this.velocity.x;
+                this.y += this.velocity.y;
+                this.alpha -= 0.01;
+                if (this.alpha <= 0) this.alpha = 0;
+                this.draw();
+            }
+        }
+
+        function createFirework(x, y) {
+            for (let i = 0; i < 100; i++) {
+                particles.push(new Particle(x, y));
+            }
+        }
+
+        function animate() {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+            ctx.fillRect(0, 0, width, height);
+            
+            particles.forEach((particle, index) => {
+                if (particle.alpha <= 0) {
+                    particles.splice(index, 1);
+                } else {
+                    particle.update();
+                }
+            });
+
+            hue += 0.5;
+            requestAnimationFrame(animate);
+        }
+
+        // 鼠标点击事件
+        canvas.addEventListener('click', (e) => {
+            createFirework(e.clientX, e.clientY);
+        });
+
+        // 自动发射
+        function autoLaunchFirework() {
+            if (!autoLaunch) return;
+            createFirework(
+                Math.random() * width,
+                Math.random() * height
+            );
+            setTimeout(autoLaunchFirework, Math.random() * 1000 + 500);
+        }
+
+        // 切换自动发射
+        function toggleAutoLaunch() {
+            autoLaunch = !autoLaunch;
+            if (autoLaunch) {
+                autoLaunchFirework();
+            }
+        }
+
+        // 生成背景星星
+        function createStars() {
+            const stars = 100;
+            const container = document.createElement('div');
+            container.style.position = 'fixed';
+            container.style.width = '100%';
+            container.style.height = '100%';
+            container.style.pointerEvents = 'none';
+            
+            for (let i = 0; i < stars; i++) {
+                const star = document.createElement('div');
+                star.style.position = 'absolute';
+                star.style.width = Math.random() * 3 + 'px';
+                star.style.height = star.style.width;
+                star.style.background = 'white';
+                star.style.borderRadius = '50%';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.opacity = Math.random();
+                container.appendChild(star);
+            }
+            document.body.appendChild(container);
+        }
+
+        // 初始化
+        createStars();
+        animate();
+    </script>
+</body>
+</html>
